@@ -1,0 +1,19 @@
+package pirelli
+
+//list any import classes here.
+import model.PLCEvent;
+import function utils.RestFunctions.*;
+
+// rules
+
+rule "PLC Rule"
+no-loop 
+
+    when
+        accumulate ( PLCEvent( input2 > 10.0 ) over window:time( 40s );
+        			$c : count();
+        			$c >= 3 )
+    then
+    	restGet();
+
+end
