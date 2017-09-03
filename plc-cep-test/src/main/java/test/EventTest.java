@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import model.PLCEvent;
+import utils.HttpAsyncClientsProvider;
 
 public class EventTest {
 	private static final Logger log = LoggerFactory.getLogger(EventTest.class);
@@ -60,6 +61,12 @@ public class EventTest {
 		} finally {
 			log.info("Disposing session.");
 			kieSession.dispose();
+			
+			//Waiting Pending Asynchronous request
+			TimeUnit.SECONDS.sleep(1);
+			
+			//Close the HTTP client
+			HttpAsyncClientsProvider.INSTANCE.close();
 		}
 
 	}

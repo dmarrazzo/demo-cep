@@ -4,16 +4,22 @@ package pirelli
 import model.PLCEvent;
 import function utils.RestFunctions.*;
 
+// declaration 
+declare window RiskWindow 
+	PLCEvent( input2 > 10.0 ) over window:time( 40s )
+end
+
 // rules
 
 rule "PLC Rule"
 no-loop 
 
-    when
-        accumulate ( PLCEvent( input2 > 10.0 ) over window:time( 40s );
-        			$c : count();
-        			$c >= 3 )
+    when 
+		accumulate ( PLCEvent() from window RiskWindow ;
+       		$c : count();
+       		$c >= 3 )
+
     then
-    	restGet();
+    	restPost("Alert");
 
 end
