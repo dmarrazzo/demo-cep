@@ -18,8 +18,11 @@ no-loop
 		accumulate ( PLCEvent() from window RiskWindow ;
        		$c : count();
        		$c >= 3 )
+       	$lastEvent : PLCEvent() over window:length(1)
+       	PLCEvent( this == $lastEvent ) from window RiskWindow ;
 
     then
-    	restPost("Alert");
+    	restPost("Alert " + $lastEvent);
+    	//System.out.println("ok "+ $lastEvent );
 
 end

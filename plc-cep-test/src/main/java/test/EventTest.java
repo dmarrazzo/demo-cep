@@ -19,7 +19,7 @@ import model.PLCEvent;
 import utils.HttpAsyncClientsProvider;
 
 public class EventTest {
-	private static final Logger log = LoggerFactory.getLogger(EventTest.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EventTest.class);
 
 	public static void main(String[] args) throws InterruptedException {
 
@@ -33,7 +33,7 @@ public class EventTest {
 				KieBase kbase = kieContainer.newKieBase(kbconf);
 				
 		// Initializing KieSession.
-		log.info("Creating KieSession.");
+		LOGGER.info("Creating KieSession.");
 		KieSessionConfiguration conf = KieServices.Factory.get().newKieSessionConfiguration();
 		conf.setOption(ClockTypeOption.get("pseudo"));
 
@@ -43,23 +43,27 @@ public class EventTest {
 		
 		try {
 			// Event 1
-			PLCEvent plcEvent = new PLCEvent("0001", true, 41.0, new Date());
+			PLCEvent plcEvent = new PLCEvent("0001", true, 41.0, new Date(clock.getCurrentTime()));
 			kieSession.insert(plcEvent);
+			LOGGER.info("Firing rules...");
 			kieSession.fireAllRules();
-
+			
 			// Event 2
 			clock.advanceTime(10, TimeUnit.SECONDS);
-			plcEvent = new PLCEvent("0002", true, 20.0, new Date());
+			plcEvent = new PLCEvent("0002", true, 20.0, new Date(clock.getCurrentTime()));
 			kieSession.insert(plcEvent);
+			LOGGER.info("Firing rules...");
 			kieSession.fireAllRules();
 			
 			// Event 3
 			clock.advanceTime(20, TimeUnit.SECONDS);
-			plcEvent = new PLCEvent("0003", true, 41.0, new Date());
+			plcEvent = new PLCEvent("0003", true, 41.0, new Date(clock.getCurrentTime()));
 			kieSession.insert(plcEvent);
+			LOGGER.info("Firing rules...");
 			kieSession.fireAllRules();
+			
 		} finally {
-			log.info("Disposing session.");
+			LOGGER.info("Disposing session.");
 			kieSession.dispose();
 			
 			//Waiting Pending Asynchronous request
