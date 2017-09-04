@@ -2,27 +2,35 @@ package pirelli
 
 //list any import classes here.
 import model.PLCEvent;
+import model.RiskyEvent;
 import function utils.RestFunctions.*;
 
 // declaration 
 declare window RiskWindow 
-	PLCEvent( input2 > 10.0 ) over window:time( 40s )
+	RiskyEvent () over window:time( 40s )
 end
 
 // rules
 
-rule "PLC Rule"
+rule "Risky Event"
 no-loop 
 
+	when
+		$plcEvent: PLCEvent( input2 > 10.0 )
+	then
+		insert(new RiskyEvent($plcEvent));
+				
+end
+
+rule "Risky Situation"
     when 
-		accumulate ( PLCEvent() from window RiskWindow ;
+		accumulate ( RiskyEvent() from window RiskWindow ;
        		$c : count();
        		$c >= 3 )
-       	$lastEvent : PLCEvent() over window:length(1)
-       	PLCEvent( this == $lastEvent ) from window RiskWindow ;
+       	$lastEvent : RiskyEvent() over window:length(1)
 
     then
     	restPost("Alert " + $lastEvent);
-    	//System.out.println("ok "+ $lastEvent );
+//    	System.out.println("ok "+ $lastEvent );
 
 end

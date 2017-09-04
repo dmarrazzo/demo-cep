@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.kie.api.KieServices;
 import org.kie.api.command.BatchExecutionCommand;
@@ -65,7 +66,7 @@ public class Main {
 			List<Command> commands = new ArrayList<Command>();
 
 			// -------------
-			PLCEvent plcEvent = new PLCEvent("0003", true, 11.0, new Date());
+			PLCEvent plcEvent = new PLCEvent("0001", true, 11.0, new Date());
 			
 			// INSERT WM
 			commands.add(cmdFactory.newInsert(plcEvent, "plcEvent"));
@@ -79,6 +80,41 @@ public class Main {
 			BatchExecutionCommand command = cmdFactory.newBatchExecution(commands, KSESSION);
 			
 			ServiceResponse<ExecutionResults> response = ruleClient.executeCommandsWithResults(CONTAINER, command);
+
+			TimeUnit.SECONDS.sleep(1);
+			// -------------
+			plcEvent = new PLCEvent("0002", true, 11.0, new Date());
+
+			// INSERT WM
+			commands.add(cmdFactory.newInsert(plcEvent, "plcEvent"));
+						
+			// GET ALL THE VM
+			commands.add(cmdFactory.newGetObjects("objs"));
+
+			// FIRE RULES
+			commands.add(cmdFactory.newFireAllRules("fireAllRules"));
+		    
+			command = cmdFactory.newBatchExecution(commands, KSESSION);
+			
+			response = ruleClient.executeCommandsWithResults(CONTAINER, command);
+			TimeUnit.SECONDS.sleep(1);
+			// -------------
+			plcEvent = new PLCEvent("0003", true, 15.0, new Date());
+
+			// INSERT WM
+			commands.add(cmdFactory.newInsert(plcEvent, "plcEvent"));
+						
+			// GET ALL THE VM
+			commands.add(cmdFactory.newGetObjects("objs"));
+
+			// FIRE RULES
+			commands.add(cmdFactory.newFireAllRules("fireAllRules"));
+		    
+			command = cmdFactory.newBatchExecution(commands, KSESSION);
+			
+			response = ruleClient.executeCommandsWithResults(CONTAINER, command);
+
+			//RESULTS
 			ExecutionResults results = response.getResult();
 
 			if (results==null)
