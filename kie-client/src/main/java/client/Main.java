@@ -30,14 +30,14 @@ public class Main {
 
 	final static Logger log =  LoggerFactory.getLogger(Main.class);
 	
-	private static String URL = "http://localhost:8081/kie-server/services/rest/server";
+	private static String URL = "http://localhost:8080/kie-server/services/rest/server";
 	private static String user = "donato";
 	private static String password = "donato";
 	private static String CONTAINER = "example:plc-cep:1.0-SNAPSHOT";
 	private static final String KSESSION = "ksessionCep";
 
 	public static void main(String[] args) {
-		if (args.length==3 ) {
+		if (args.length==4 ) {
 			URL = args[0];
 			CONTAINER = args[1]; 
 			user = args[2];

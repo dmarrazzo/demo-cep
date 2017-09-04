@@ -4,6 +4,7 @@ package pirelli
 import model.PLCEvent;
 import model.RiskyEvent;
 import function utils.RestFunctions.*;
+import function utils.ProcFunctions.*;
 
 // declaration 
 declare window RiskWindow 
@@ -30,7 +31,8 @@ rule "Risky Situation"
        	$lastEvent : RiskyEvent() over window:length(1)
 
     then
-    	restPost("Alert " + $lastEvent);
+//    	restPost("Alert " + $lastEvent);
+    	startProcess($lastEvent.getId());
 //    	System.out.println("ok "+ $lastEvent );
 
 end

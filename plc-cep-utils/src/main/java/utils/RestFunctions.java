@@ -14,7 +14,7 @@ public final class RestFunctions {
 	private static final String FEEDBACK_URL = System.getProperty("FEEDBACK_URL", "http://mas460:8090/test");
 	private static final String CHARSET = "UTF-8";
 	private static CloseableHttpAsyncClient httpclient;
-
+	
 	private static class RestCallback implements FutureCallback<HttpResponse> {
 		@Override
 		public void failed(Exception ex) {
@@ -52,4 +52,5 @@ public final class RestFunctions {
 		request.setEntity(new StringEntity(payload, CHARSET));
 		httpclient.execute(request, new RestCallback());
 	}
+
 }

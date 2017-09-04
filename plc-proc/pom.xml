@@ -3,23 +3,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>example</groupId>
-  <artifactId>plc-cep</artifactId>
+  <artifactId>plc-proc</artifactId>
   <version>1.1-SNAPSHOT</version>
   <packaging>kjar</packaging>
-  <name>plc-cep</name>
-  <dependencies>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-api</artifactId>
-      <version>6.5.0.Final-redhat-15</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>example</groupId>
-      <artifactId>plc-cep-utils</artifactId>
-      <version>1.1-SNAPSHOT</version>
-    </dependency>
-  </dependencies>
+  <name>plc-proc</name>
   <repositories>
     <repository>
       <id>guvnor-m2-repo</id>
@@ -29,14 +16,6 @@
   </repositories>
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.5.1</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.kie</groupId>
         <artifactId>kie-maven-plugin</artifactId>
