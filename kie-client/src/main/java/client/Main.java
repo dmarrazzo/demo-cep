@@ -30,13 +30,19 @@ public class Main {
 
 	final static Logger log =  LoggerFactory.getLogger(Main.class);
 	
-	private static final String URL = "http://localhost:8080/kie-server/services/rest/server";
-	private static final String user = "donato";
-	private static final String password = "donato";
-	private static final String CONTAINER = "example:plc-cep:1.0-SNAPSHOT";
+	private static String URL = "http://localhost:8081/kie-server/services/rest/server";
+	private static String user = "donato";
+	private static String password = "donato";
+	private static String CONTAINER = "example:plc-cep:1.0-SNAPSHOT";
 	private static final String KSESSION = "ksessionCep";
 
 	public static void main(String[] args) {
+		if (args.length==3 ) {
+			URL = args[0];
+			CONTAINER = args[1]; 
+			user = args[2];
+			password = args[3];
+		}
 		long start = System.currentTimeMillis();
 		ksFireAllRule();
 		//ksStartRuleFlow();
@@ -67,7 +73,22 @@ public class Main {
 
 			// -------------
 			PLCEvent plcEvent = new PLCEvent("0001", true, 11.0, new Date());
+			TimeUnit.SECONDS.sleep(1);
 			
+			// INSERT WM
+			commands.add(cmdFactory.newInsert(plcEvent, "plcEvent"));
+
+			// -------------
+			plcEvent = new PLCEvent("0002", true, 11.0, new Date());
+			TimeUnit.SECONDS.sleep(1);
+
+			// INSERT WM
+			commands.add(cmdFactory.newInsert(plcEvent, "plcEvent"));
+
+			// -------------
+			plcEvent = new PLCEvent("0003", true, 15.0, new Date());
+			TimeUnit.SECONDS.sleep(1);
+
 			// INSERT WM
 			commands.add(cmdFactory.newInsert(plcEvent, "plcEvent"));
 						
@@ -80,39 +101,6 @@ public class Main {
 			BatchExecutionCommand command = cmdFactory.newBatchExecution(commands, KSESSION);
 			
 			ServiceResponse<ExecutionResults> response = ruleClient.executeCommandsWithResults(CONTAINER, command);
-
-			TimeUnit.SECONDS.sleep(1);
-			// -------------
-			plcEvent = new PLCEvent("0002", true, 11.0, new Date());
-
-			// INSERT WM
-			commands.add(cmdFactory.newInsert(plcEvent, "plcEvent"));
-						
-			// GET ALL THE VM
-			commands.add(cmdFactory.newGetObjects("objs"));
-
-			// FIRE RULES
-			commands.add(cmdFactory.newFireAllRules("fireAllRules"));
-		    
-			command = cmdFactory.newBatchExecution(commands, KSESSION);
-			
-			response = ruleClient.executeCommandsWithResults(CONTAINER, command);
-			TimeUnit.SECONDS.sleep(1);
-			// -------------
-			plcEvent = new PLCEvent("0003", true, 15.0, new Date());
-
-			// INSERT WM
-			commands.add(cmdFactory.newInsert(plcEvent, "plcEvent"));
-						
-			// GET ALL THE VM
-			commands.add(cmdFactory.newGetObjects("objs"));
-
-			// FIRE RULES
-			commands.add(cmdFactory.newFireAllRules("fireAllRules"));
-		    
-			command = cmdFactory.newBatchExecution(commands, KSESSION);
-			
-			response = ruleClient.executeCommandsWithResults(CONTAINER, command);
 
 			//RESULTS
 			ExecutionResults results = response.getResult();
