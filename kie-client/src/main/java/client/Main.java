@@ -30,7 +30,7 @@ public class Main {
 
 	final static Logger log =  LoggerFactory.getLogger(Main.class);
 	
-	private static String URL = "http://localhost:8081/kie-server/services/rest/server";
+	private static String URL = "http://localhost:8080/kie-server/services/rest/server";
 	private static String user = "donato";
 	private static String password = "donato";
 	private static String CONTAINER = "example:plc-cep:1.0-SNAPSHOT";
@@ -72,21 +72,21 @@ public class Main {
 			List<Command> commands = new ArrayList<Command>();
 
 			// -------------
-			PLCEvent plcEvent = new PLCEvent("0001", true, 11.0, new Date());
+			PLCEvent plcEvent = new PLCEvent("0001", true, 2850.0, new Date());
 			TimeUnit.SECONDS.sleep(1);
 			
 			// INSERT WM
 			commands.add(cmdFactory.newInsert(plcEvent, "plcEvent"));
 
 			// -------------
-			plcEvent = new PLCEvent("0002", true, 11.0, new Date());
+			plcEvent = new PLCEvent("0002", true, 2900.0, new Date());
 			TimeUnit.SECONDS.sleep(1);
 
 			// INSERT WM
 			commands.add(cmdFactory.newInsert(plcEvent, "plcEvent"));
 
 			// -------------
-			plcEvent = new PLCEvent("0003", true, 15.0, new Date());
+			plcEvent = new PLCEvent("0003", true, 2915.0, new Date());
 			TimeUnit.SECONDS.sleep(1);
 
 			// INSERT WM

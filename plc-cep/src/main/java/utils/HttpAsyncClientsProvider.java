@@ -13,9 +13,9 @@ public enum HttpAsyncClientsProvider {
     INSTANCE;
 
     // private
-    private static final String FEEDBACK_SCOPE = System.getProperty("FEEDBACK_SCOPE", "api.iot.inmyopenshift.cloud");
-    private static final String FEEDBACK_USER = System.getProperty("FEEDBACK_USER", "DemoUser");
-    private static final String FEEDBACK_PASSWORD = System.getProperty("FEEDBACK_PASSWORD", "DemoPasswordCloud#1");
+    private static final String FEEDBACK_SCOPE = System.getenv("FEEDBACK_SCOPE");
+    private static final String FEEDBACK_USER = System.getenv("FEEDBACK_USER");
+    private static final String FEEDBACK_PASSWORD = System.getenv("FEEDBACK_PASSWORD");
 
     private CloseableHttpAsyncClient httpAsyncClient = null;
 
@@ -40,12 +40,16 @@ public enum HttpAsyncClientsProvider {
     }
 
     private synchronized void newHttpAsynchClient() {
-        CredentialsProvider credsProvider = new BasicCredentialsProvider();
-        credsProvider.setCredentials(new AuthScope(FEEDBACK_SCOPE, 80),
-                new UsernamePasswordCredentials(FEEDBACK_USER, FEEDBACK_PASSWORD));
-        httpAsyncClient = HttpAsyncClients.custom()
-                                          .setDefaultCredentialsProvider(credsProvider)
-                                          .build();
+        if (FEEDBACK_SCOPE == null)
+            httpAsyncClient = HttpAsyncClients.createDefault();
+        else {
+            CredentialsProvider credsProvider = new BasicCredentialsProvider();
+            credsProvider.setCredentials(new AuthScope(FEEDBACK_SCOPE, 80),
+                    new UsernamePasswordCredentials(FEEDBACK_USER, FEEDBACK_PASSWORD));
+            httpAsyncClient = HttpAsyncClients.custom()
+                                              .setDefaultCredentialsProvider(credsProvider)
+                                              .build();
+        }
     }
 
 }

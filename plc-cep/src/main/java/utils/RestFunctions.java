@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 public final class RestFunctions {
 	final static Logger LOGGER = LoggerFactory.getLogger(RestFunctions.class);
-	private static final String FEEDBACK_URL = System.getProperty("FEEDBACK_URL", "http://mas460:8090/test");
+	private static String FEEDBACK_URL = System.getenv("FEEDBACK_URL");
 	private static final String CHARSET = "UTF-8";
 	private static CloseableHttpAsyncClient httpclient;
 
@@ -38,6 +38,9 @@ public final class RestFunctions {
 
 		httpclient = HttpAsyncClientsProvider.INSTANCE.get();
 
+		if (FEEDBACK_URL == null)
+		    FEEDBACK_URL = "http://mas460:8090/test";
+		
 		HttpGet request = new HttpGet(FEEDBACK_URL);
 		httpclient.execute(request, new RestCallback());
 	}
@@ -46,6 +49,9 @@ public final class RestFunctions {
 		LOGGER.info("restPost: start");
 
 		httpclient = HttpAsyncClientsProvider.INSTANCE.get();
+
+		if (FEEDBACK_URL == null)
+            FEEDBACK_URL = "http://mas460:8090/test";
 
 		HttpPost request = new HttpPost(FEEDBACK_URL);
 
