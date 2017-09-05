@@ -16,7 +16,7 @@ rule "Risky Event"
 no-loop 
 
 	when
-		$plcEvent: PLCEvent( input2 > 10.0 )
+		$plcEvent: PLCEvent( input2 > 2800.0 )
 	then
 		insert(new RiskyEvent($plcEvent));
 				
@@ -30,7 +30,7 @@ rule "Risky Situation"
        	$lastEvent : RiskyEvent() over window:length(1)
 
     then
-    	restPost("Alert " + $lastEvent);
+    	restGet();
 //    	System.out.println("ok "+ $lastEvent );
 
 end

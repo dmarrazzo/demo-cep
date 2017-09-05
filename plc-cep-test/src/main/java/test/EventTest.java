@@ -43,21 +43,21 @@ public class EventTest {
 		
 		try {
 			// Event 1
-			PLCEvent plcEvent = new PLCEvent("0001", true, 41.0, new Date(clock.getCurrentTime()));
+			PLCEvent plcEvent = new PLCEvent("0001", true, 2900.0, new Date(clock.getCurrentTime()));
 			kieSession.insert(plcEvent);
 			LOGGER.info("Firing rules...");
 			kieSession.fireAllRules();
 			
 			// Event 2
 			clock.advanceTime(10, TimeUnit.SECONDS);
-			plcEvent = new PLCEvent("0002", true, 20.0, new Date(clock.getCurrentTime()));
+			plcEvent = new PLCEvent("0002", true, 2910.0, new Date(clock.getCurrentTime()));
 			kieSession.insert(plcEvent);
 			LOGGER.info("Firing rules...");
 			kieSession.fireAllRules();
 			
 			// Event 3
 			clock.advanceTime(20, TimeUnit.SECONDS);
-			plcEvent = new PLCEvent("0003", true, 41.0, new Date(clock.getCurrentTime()));
+			plcEvent = new PLCEvent("0003", true, 2920.0, new Date(clock.getCurrentTime()));
 			kieSession.insert(plcEvent);
 			LOGGER.info("Firing rules...");
 			kieSession.fireAllRules();
