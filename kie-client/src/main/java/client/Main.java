@@ -37,7 +37,7 @@ public class Main {
 	private static final String KSESSION = "ksessionCep";
 
 	public static void main(String[] args) {
-		if (args.length==3 ) {
+		if (args.length==4 ) {
 			URL = args[0];
 			CONTAINER = args[1]; 
 			user = args[2];
