@@ -13,4 +13,10 @@ public class RiskyEvent extends PLCEvent {
 		super(plcEvent.getId(), plcEvent.getInput1(), plcEvent.getInput2(), plcEvent.getTimestamp());
 	}
 
+	@Override
+	public String toString() {
+		return String.format("RiskyEvent [getId()=%s, getInput1()=%s, getInput2()=%s]", getId(), getInput1(),
+		        getInput2());
+	}
+
 }
