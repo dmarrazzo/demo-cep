@@ -32,7 +32,7 @@ rule "Risky Situation"
 
     then
 //    	restPost("Alert " + $lastEvent);
-    	startProcess($lastEvent.getId());
-//    	System.out.println("ok "+ $lastEvent );
+//    	startProcess($lastEvent.getId());
+    	System.out.println("ok "+ $lastEvent );
 
 end
