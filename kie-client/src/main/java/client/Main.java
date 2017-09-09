@@ -25,11 +25,10 @@ import org.slf4j.LoggerFactory;
 
 import model.PLCEvent;
 
-
 public class Main {
 
-	final static Logger log =  LoggerFactory.getLogger(Main.class);
-	
+	final static Logger log = LoggerFactory.getLogger(Main.class);
+
 	private static String URL = "http://localhost:8080/kie-server/services/rest/server";
 	private static String user = "donato";
 	private static String password = "donato";
@@ -37,51 +36,50 @@ public class Main {
 	private static final String KSESSION = "ksessionCep";
 
 	public static void main(String[] args) {
-		if (args.length==4 ) {
+		if (args.length == 4) {
 			URL = args[0];
-			CONTAINER = args[1]; 
+			CONTAINER = args[1];
 			user = args[2];
 			password = args[3];
 		}
 		long start = System.currentTimeMillis();
 		ksFireAllRule();
-		//ksStartRuleFlow();
+		// ksStartRuleFlow();
 		long end = System.currentTimeMillis();
-		System.out.println("time elapsed: "+ (end-start));
+		System.out.println("time elapsed: " + (end - start));
 	}
 
-	@SuppressWarnings("rawtypes")
 	public static void ksFireAllRule() {
 		try {
-			
+
 			KieServicesConfiguration config = KieServicesFactory.newRestConfiguration(URL, user, password);
 			// Marshalling
-			Set<Class<?>> extraClasses = new HashSet<Class<?>>();	
+			Set<Class<?>> extraClasses = new HashSet<Class<?>>();
 			extraClasses.add(PLCEvent.class);
 
 			config.addExtraClasses(extraClasses);
 			config.setMarshallingFormat(MarshallingFormat.JSON);
 			Map<String, String> headers = null;
 			config.setHeaders(headers);
-			
+
 			KieServicesClient client = KieServicesFactory.newKieServicesClient(config);
 			RuleServicesClient ruleClient = client.getServicesClient(RuleServicesClient.class);
 
-			
-			KieCommands cmdFactory = KieServices.Factory.get().getCommands();
-			List<Command> commands = new ArrayList<Command>();
+			KieCommands cmdFactory = KieServices.Factory.get()
+			                                            .getCommands();
+			List<Command<?>> commands = new ArrayList<>();
 
 			// -------------
 			PLCEvent plcEvent = new PLCEvent("0001", true, 11.0, new Date());
 			TimeUnit.SECONDS.sleep(1);
-			
+
 			// INSERT WM
 			commands.add(cmdFactory.newInsert(plcEvent, "plcEvent"));
-			
+
 			// FIRE RULES
 			fireAllRules(ruleClient, cmdFactory, commands);
 			commands.clear();
-			
+
 			// -------------
 			plcEvent = new PLCEvent("0002", true, 11.0, new Date());
 			TimeUnit.SECONDS.sleep(1);
@@ -92,39 +90,40 @@ public class Main {
 			// FIRE RULES
 			fireAllRules(ruleClient, cmdFactory, commands);
 			commands.clear();
-			
+
 			// -------------
 			plcEvent = new PLCEvent("0003", true, 15.0, new Date());
 			TimeUnit.SECONDS.sleep(1);
 
 			// INSERT WM
 			commands.add(cmdFactory.newInsert(plcEvent, "plcEvent"));
-						
+
 			// FIRE RULES
 			fireAllRules(ruleClient, cmdFactory, commands);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private static void fireAllRules(RuleServicesClient ruleClient, KieCommands cmdFactory, List<Command> commands)
+	private static void fireAllRules(RuleServicesClient ruleClient, KieCommands cmdFactory, List<Command<?>> commands)
 	        throws Exception {
+		// FIRE RULES
+		commands.add(cmdFactory.newFireAllRules("fireAllRules"));
+
 		// GET ALL THE VM
 		commands.add(cmdFactory.newGetObjects("objs"));
 
-		commands.add(cmdFactory.newFireAllRules("fireAllRules"));
-		
 		BatchExecutionCommand command = cmdFactory.newBatchExecution(commands, KSESSION);
-		
+
 		ServiceResponse<ExecutionResults> response = ruleClient.executeCommandsWithResults(CONTAINER, command);
 
-		//RESULTS
+		// RESULTS
 		ExecutionResults results = response.getResult();
 
-		if (results==null)
+		if (results == null)
 			throw new Exception(response.toString());
-		
+
 		Collection<String> identifiers = results.getIdentifiers();
 		for (String identifier : identifiers) {
 			Object object = results.getValue(identifier);
