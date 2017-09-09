@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import model.PLCEvent;
+import model.RiskyEvent;
 
 public class Main {
 
@@ -56,6 +57,7 @@ public class Main {
 			// Marshalling
 			Set<Class<?>> extraClasses = new HashSet<Class<?>>();
 			extraClasses.add(PLCEvent.class);
+			extraClasses.add(RiskyEvent.class);
 
 			config.addExtraClasses(extraClasses);
 			config.setMarshallingFormat(MarshallingFormat.JSON);
