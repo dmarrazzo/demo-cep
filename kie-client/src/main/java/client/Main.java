@@ -77,7 +77,11 @@ public class Main {
 			
 			// INSERT WM
 			commands.add(cmdFactory.newInsert(plcEvent, "plcEvent"));
-
+			
+			// FIRE RULES
+			fireAllRules(ruleClient, cmdFactory, commands);
+			commands.clear();
+			
 			// -------------
 			plcEvent = new PLCEvent("0002", true, 2900.0, new Date());
 			TimeUnit.SECONDS.sleep(1);
@@ -85,6 +89,10 @@ public class Main {
 			// INSERT WM
 			commands.add(cmdFactory.newInsert(plcEvent, "plcEvent"));
 
+			// FIRE RULES
+			fireAllRules(ruleClient, cmdFactory, commands);
+			commands.clear();
+			
 			// -------------
 			plcEvent = new PLCEvent("0003", true, 2915.0, new Date());
 			TimeUnit.SECONDS.sleep(1);
@@ -92,32 +100,36 @@ public class Main {
 			// INSERT WM
 			commands.add(cmdFactory.newInsert(plcEvent, "plcEvent"));
 						
-			// GET ALL THE VM
-			commands.add(cmdFactory.newGetObjects("objs"));
-
 			// FIRE RULES
-			commands.add(cmdFactory.newFireAllRules("fireAllRules"));
-		    
-			BatchExecutionCommand command = cmdFactory.newBatchExecution(commands, KSESSION);
-			
-			ServiceResponse<ExecutionResults> response = ruleClient.executeCommandsWithResults(CONTAINER, command);
-
-			//RESULTS
-			ExecutionResults results = response.getResult();
-
-			if (results==null)
-				throw new Exception(response.toString());
-			
-			Collection<String> identifiers = results.getIdentifiers();
-			for (String identifier : identifiers) {
-				Object object = results.getValue(identifier);
-				log.info("result {}", results);
-				log.info("WM object: {} {}", identifier, object);
-			}
-			
+			fireAllRules(ruleClient, cmdFactory, commands);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private static void fireAllRules(RuleServicesClient ruleClient, KieCommands cmdFactory, List<Command> commands)
+	        throws Exception {
+		// GET ALL THE VM
+		commands.add(cmdFactory.newGetObjects("objs"));
+
+		commands.add(cmdFactory.newFireAllRules("fireAllRules"));
+		
+		BatchExecutionCommand command = cmdFactory.newBatchExecution(commands, KSESSION);
+		
+		ServiceResponse<ExecutionResults> response = ruleClient.executeCommandsWithResults(CONTAINER, command);
+
+		//RESULTS
+		ExecutionResults results = response.getResult();
+
+		if (results==null)
+			throw new Exception(response.toString());
+		
+		Collection<String> identifiers = results.getIdentifiers();
+		for (String identifier : identifiers) {
+			Object object = results.getValue(identifier);
+			log.info("result {}", results);
+			log.info("WM object: {} {}", identifier, object);
 		}
 	}
 
