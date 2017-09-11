@@ -1,0 +1,77 @@
+import model.BagScannedEvent;
+import model.Location;
+import model.Flight;
+
+//---------------------------------------------------------
+rule "hello cep"
+enabled false
+
+    when
+       BagScannedEvent ( )
+    then
+       System.out.println("Hello Cep");
+
+end
+
+//---------------------------------------------------------
+rule "time correlation"
+enabled false
+
+	when
+	   $b1: BagScannedEvent ( location == Location.CHECK_IN )
+	   not BagScannedEvent ( id == $b1.id, location ==  Location.SORTING, this after[0, 10m] $b1)
+	then
+	   System.out.println("BagScannedEvent timeout!");
+
+end
+
+//---------------------------------------------------------
+rule "time window"
+enabled false
+
+    when
+        accumulate(  BagScannedEvent (location == Location.CHECK_IN) over window:time(10m);
+                                    $c : count();
+                                    $c < 3);
+    then
+        System.out.println("Checkin too slow!");
+
+end
+
+//---------------------------------------------------------
+rule "occurrences window"
+enabled false
+
+    when
+        accumulate(  $b : BagScannedEvent (location == Location.CHECK_IN) over window:lenght(3);
+                                    $av : average ( $b.getWeight() );
+                                    $av > 12);
+    then
+        System.out.println("Checkin Average weight too high! " + $av);
+
+end
+
+//---------------------------------------------------------
+
+rule "flight weight"
+enabled true
+no-loop 
+
+    when
+        $f : Flight ( )
+        $b : BagScannedEvent ( flightName == $f.id )
+    then
+        $f.setActualWeight ( $f.getActualWeight() + $b.getWeight() );
+        System.out.println("flight weight: " + $f.getActualWeight());
+        
+end
+
+//---------------------------------------------------------
+rule "overload"
+enabled true
+
+    when
+        $f : Flight (  )
+    then
+        System.out.println("Alert overload!" +$f);
+end

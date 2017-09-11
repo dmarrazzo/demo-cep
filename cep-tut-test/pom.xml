@@ -5,6 +5,11 @@
 	<artifactId>cep-tut-test</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<dependencies>
+    <dependency>
+      <groupId>example</groupId>
+      <artifactId>cep-tut</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-core</artifactId>
@@ -12,7 +17,6 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -21,16 +25,24 @@
 		<dependency>
 			<groupId>org.kie</groupId>
 			<artifactId>kie-api</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-compiler</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>drools-decisiontables</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>
+				drools-workbench-models-guided-dtable
+			</artifactId>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
