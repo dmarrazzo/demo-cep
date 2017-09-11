@@ -59,7 +59,7 @@ public class Test {
 		kieSession.fireAllRules();		
 	}
 
-	//@org.junit.Test
+	@org.junit.Test
 	public void test2() {
 		LOGGER.info("Test 2");
 		SessionPseudoClock clock = kieSession.getSessionClock();
@@ -67,14 +67,12 @@ public class Test {
 		
 		bagEvent = new BagScannedEvent("01", Location.CHECK_IN, 10.0);
 		kieSession.insert(bagEvent);
-		kieSession.fireAllRules();
-
-		clock.advanceTime(11, TimeUnit.MINUTES);
+		
+		clock.advanceTime(10, TimeUnit.MINUTES);
 		
 		bagEvent = new BagScannedEvent("01", Location.SORTING, 10.0);
 		kieSession.insert(bagEvent);
 		kieSession.fireAllRules();
-		
 	}
 
 	/**
@@ -109,7 +107,7 @@ public class Test {
 	/**
 	 * decision table
 	 */
-	@org.junit.Test
+	//@org.junit.Test
 	public void test4() {
 		LOGGER.info("Test 4");
 		SessionPseudoClock clock = kieSession.getSessionClock();
