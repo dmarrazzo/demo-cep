@@ -7,19 +7,19 @@ rule "hello cep"
 enabled false
 
     when
-       BagScannedEvent ( )
+       $b : BagScannedEvent ( )
     then
-       System.out.println("Hello Cep ");
+       System.out.println("Hello Cep "+$b);
 
 end
 
 //---------------------------------------------------------
 rule "time correlation"
-enabled true
+enabled false
 
 	when
 	   $b1: BagScannedEvent ( location == Location.CHECK_IN )
-	   not BagScannedEvent ( id == $b1.id, location ==  Location.SORTING, this after[0, 10s] $b1)
+	   not BagScannedEvent ( id == $b1.id, location ==  Location.SORTING, this after[0, 10m] $b1)
 	then
 	   System.out.println("Missing Bag!");
 
@@ -54,11 +54,12 @@ end
 //---------------------------------------------------------
 
 rule "flight weight"
-enabled false
+enabled true
 no-loop
+salience -100
 
     when
-        $f : Flight ( init == true )
+        $f : Flight ()
         $b : BagScannedEvent ( flightName == $f.id )
     then
         $f.setActualWeight ( $f.getActualWeight() + $b.getWeight() );
@@ -68,10 +69,11 @@ no-loop
 end
 
 rule "overload"
-enabled false
+enabled true
+salience -100
 
     when
-        $f : Flight ( init == true, actualWeight > maxWeight )
+        $f : Flight (actualWeight > maxWeight )
     then
         System.out.println("Alert overload!" +$f);
 end
